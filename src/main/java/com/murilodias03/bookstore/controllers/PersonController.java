@@ -1,12 +1,11 @@
 package com.murilodias03.bookstore.controllers;
 
-import com.murilodias03.bookstore.PersonService;
+import com.murilodias03.bookstore.services.PersonService;
 import com.murilodias03.bookstore.model.Person;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import java.awt.*;
 import java.util.List;
 
 @RestController
@@ -14,30 +13,22 @@ import java.util.List;
 public class PersonController {
 
     private final PersonService personService;
-    private final HandlerExceptionResolver handlerExceptionResolver;
 
-    public PersonController(PersonService personService, HandlerExceptionResolver handlerExceptionResolver) {
+    public PersonController(PersonService personService) {
         this.personService = personService;
-        this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Person> findAll() {
         return personService.findAll();
     }
 
-    @RequestMapping(value = "/{id}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public Person findById(@PathVariable String id) {
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Person findById(@PathVariable Long id) {
         return personService.findById(id);
     }
 
-    @RequestMapping(
-        method = RequestMethod.POST,
+    @PostMapping(
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -45,8 +36,7 @@ public class PersonController {
         return personService.create(person);
     }
 
-    @RequestMapping(
-            method = RequestMethod.PUT,
+    @PutMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -54,11 +44,10 @@ public class PersonController {
         return personService.create(person);
     }
 
-    @RequestMapping(value = "/{id}",
-            method = RequestMethod.DELETE
-    )
-    public void delete(@PathVariable String id) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         personService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
