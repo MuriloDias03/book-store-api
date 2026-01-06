@@ -1,6 +1,10 @@
 package com.murilodias03.bookstore.services;
 
+import com.murilodias03.bookstore.data.dto.PersonDTO;
 import com.murilodias03.bookstore.exceptions.ResourceNotFoundException;
+
+import static com.murilodias03.bookstore.mapper.ObjectMapper.parseListObjects;
+import static com.murilodias03.bookstore.mapper.ObjectMapper.parseObject;
 import com.murilodias03.bookstore.model.Person;
 import com.murilodias03.bookstore.repositories.PersonRepository;
 import org.springframework.stereotype.Service;
@@ -19,25 +23,30 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public List<Person> findAll() {
+    public List<PersonDTO> findAll() {
         logger.info("Finding all people!");
 
-        return personRepository.findAll();
+        return parseListObjects(personRepository.findAll(), PersonDTO.class);
     }
 
-    public Person findById(Long id) {
+    public PersonDTO findById(Long id) {
         logger.info("Finding one person!");
 
-        return personRepository.findById(id)
+        var entity = personRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+
+        return parseObject(entity, PersonDTO.class);
     }
 
-    public Person create(Person person) {
+    public PersonDTO create(PersonDTO person) {
         logger.info("Creating one person!");
-        return personRepository.save(person);
+
+        var entity = parseObject(person, Person.class);
+
+        return parseObject(personRepository.save(entity), PersonDTO.class);
     }
 
-    public Person update(Person person) {
+    public PersonDTO update(PersonDTO person) {
         logger.info("Updating one person!");
         Person entity = personRepository.findById(person.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
@@ -47,7 +56,7 @@ public class PersonService {
         entity.setAddress(person.getAddress());
         entity.setGender(person.getGender());
 
-        return personRepository.save(entity);
+        return parseObject(personRepository.save(entity), PersonDTO.class);
     }
 
     public void delete(Long id) {
