@@ -20,3 +20,8 @@ logging:
   level:
     # root: WARN
     com.murilodias03.bookstore: DEBUG
+
+spring-doc:
+  paths-to-match: /person/**
+  swagger-ui:
+    use-root-path: true
