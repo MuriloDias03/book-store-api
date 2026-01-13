@@ -1,12 +1,13 @@
 package com.murilodias03.bookstore.data.dto;
 
 import com.fasterxml.jackson.annotation.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @JsonPropertyOrder({"id", "first_name", "last_name", "birth_day", "phone_number", "address", "gender"})
-public class PersonDTO implements Serializable {
+public class PersonDTO extends RepresentationModel<PersonDTO> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
