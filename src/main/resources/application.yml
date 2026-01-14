@@ -22,6 +22,8 @@ logging:
     com.murilodias03.bookstore: DEBUG
 
 spring-doc:
-  paths-to-match: /person/**
+  paths-to-match:
+    - /person/**
+    - /books/**
   swagger-ui:
     use-root-path: true
