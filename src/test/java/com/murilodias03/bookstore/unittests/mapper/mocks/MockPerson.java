@@ -1,4 +1,4 @@
-package com.murilodias03.bookstore.unitetests.mapper.mocks;
+package com.murilodias03.bookstore.unittests.mapper.mocks;
 
 import com.murilodias03.bookstore.data.dto.PersonDTO;
 import com.murilodias03.bookstore.model.Person;

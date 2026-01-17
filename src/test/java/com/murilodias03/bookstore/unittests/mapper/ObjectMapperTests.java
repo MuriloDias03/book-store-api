@@ -1,4 +1,4 @@
-package com.murilodias03.bookstore.unitetests.mapper;
+package com.murilodias03.bookstore.unittests.mapper;
 
 import static com.murilodias03.bookstore.mapper.ObjectMapper.parseListObjects;
 import static com.murilodias03.bookstore.mapper.ObjectMapper.parseObject;
@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.murilodias03.bookstore.data.dto.PersonDTO;
 import com.murilodias03.bookstore.model.Person;
-import com.murilodias03.bookstore.unitetests.mapper.mocks.MockPerson;
+import com.murilodias03.bookstore.unittests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

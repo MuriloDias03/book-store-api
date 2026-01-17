@@ -1,10 +1,11 @@
-package com.murilodias03.bookstore.services;
+package com.murilodias03.bookstore.unittests.services;
 
 import com.murilodias03.bookstore.data.dto.PersonDTO;
 import com.murilodias03.bookstore.exceptions.RequeriedObjectsIsNullException;
 import com.murilodias03.bookstore.model.Person;
 import com.murilodias03.bookstore.repositories.PersonRepository;
-import com.murilodias03.bookstore.unitetests.mapper.mocks.MockPerson;
+import com.murilodias03.bookstore.services.PersonService;
+import com.murilodias03.bookstore.unittests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
