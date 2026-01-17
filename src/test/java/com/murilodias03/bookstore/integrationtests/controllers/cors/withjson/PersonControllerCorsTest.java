@@ -1,4 +1,4 @@
-package com.murilodias03.bookstore.integrationtests.controllers.withjson;
+package com.murilodias03.bookstore.integrationtests.controllers.cors.withjson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Disabled("Docker com problemas no Windows - Pular temporariamente")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PersonControllerTest extends AbstractIntegrationTest {
+class PersonControllerCorsTest extends AbstractIntegrationTest {
 
     private static RequestSpecification specification;
     private static ObjectMapper objectMapper;
@@ -77,6 +77,7 @@ class PersonControllerTest extends AbstractIntegrationTest {
         assertEquals("Dias", createdPerson.getLastName());
         assertEquals("São Joaquim da Barra - SP", createdPerson.getAddress());
         assertEquals("Male", createdPerson.getGender());
+        assertTrue(createdPerson.getEnabled());
     }
 
     @Test
@@ -144,6 +145,7 @@ class PersonControllerTest extends AbstractIntegrationTest {
         assertEquals("Dias", createdPerson.getLastName());
         assertEquals("São Joaquim da Barra - SP", createdPerson.getAddress());
         assertEquals("Male", createdPerson.getGender());
+        assertTrue(createdPerson.getEnabled());
     }
 
     @Test
@@ -178,6 +180,7 @@ class PersonControllerTest extends AbstractIntegrationTest {
         personDTO.setLastName("Dias");
         personDTO.setAddress("São Joaquim da Barra - SP");
         personDTO.setGender("Male");
+        personDTO.setEnabled(true);
     }
 
 }

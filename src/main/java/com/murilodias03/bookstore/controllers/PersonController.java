@@ -72,6 +72,16 @@ public class PersonController implements PersonControllerDocs {
         return personService.create(person);
     }
 
+    @PatchMapping(value = "/{id}",
+            produces = {
+                MediaType.APPLICATION_JSON_VALUE,
+                MediaType.APPLICATION_XML_VALUE,
+                MediaType.APPLICATION_YAML_VALUE})
+    @Override
+    public PersonDTO disablePerson(@PathVariable Long id){
+        return personService.disablePerson(id);
+    }
+
 
     @DeleteMapping(value = "/{id}")
     @Override
