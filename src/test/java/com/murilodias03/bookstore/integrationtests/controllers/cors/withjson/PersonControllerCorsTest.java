@@ -19,7 +19,7 @@ import static io.restassured.RestAssured.given;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled("Docker com problemas no Windows - Pular temporariamente")
+@Disabled("Desabilitado temporariamente")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PersonControllerCorsTest extends AbstractIntegrationTest {

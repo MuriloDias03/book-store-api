@@ -22,7 +22,7 @@ import static io.restassured.RestAssured.given;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled("Docker com problemas no Windows - Pular temporariamente")
+@Disabled("Desabilitado temporariamente")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PersonControllerXmlTest extends AbstractIntegrationTest {
@@ -47,7 +47,7 @@ class PersonControllerXmlTest extends AbstractIntegrationTest {
 
         specification = new RequestSpecBuilder()
             .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_FRONTEND)
-            .setBasePath("/api/person/v1")
+            .setBasePath("/person")
             .setPort(TestConfigs.SERVER_PORT)
                 .addFilter(new RequestLoggingFilter(LogDetail.ALL))
                 .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
