@@ -40,7 +40,6 @@ public class PersonController implements PersonControllerDocs {
         return ResponseEntity.ok().body(personService.findAll(pageable));
     }
 
-
     @GetMapping(value = "/{id}", produces = {
             MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_XML_VALUE,
