@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.murilodias03.bookstore.config.TestConfigs;
 import com.murilodias03.bookstore.integrationtests.dto.PersonDTO;
-import com.murilodias03.bookstore.integrationtests.dto.wrappers.WrapperPersonDTO;
+import com.murilodias03.bookstore.integrationtests.dto.wrappers.json.WrapperPersonDTO;
 import com.murilodias03.bookstore.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -216,8 +216,6 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertEquals("09846 Independence Center", personOne.getAddress());
         assertEquals("Male", personOne.getGender());
 
-        // No log anterior o ID 699 (Aaron) estava false, mas aqui estamos na page 3.
-        // Se der erro de true/false aqui, confira o log, mas a estrutura está certa.
         assertFalse(personOne.getEnabled());
 
         PersonDTO personFour = people.get(4);
@@ -229,6 +227,52 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertEquals("Luchelli", personFour.getLastName());
         assertEquals("9 Doe Crossing Avenue", personFour.getAddress());
         assertEquals("Male", personFour.getGender());
+        assertFalse(personFour.getEnabled());
+    }
+
+
+    @Test
+    @Order(7)
+    void findByNameTest() throws JsonProcessingException {
+
+        // {{baseUrl}}/person/findPeopleByName/and?page=0&size=12&direction=asc
+        var content = given(specification)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .pathParam("firstName", "and")
+                .queryParams("page", 0, "size", 12, "direction", "asc")
+                .when()
+                .get("findPeopleByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .extract()
+                .body()
+                .asString();
+
+        WrapperPersonDTO wrapper = objectMapper.readValue(content, WrapperPersonDTO.class);
+        List<PersonDTO> people = wrapper.getEmbedded().getPeople();
+
+        PersonDTO personOne = people.get(0);
+
+        assertNotNull(personOne.getId());
+        assertTrue(personOne.getId() > 0);
+
+        assertEquals("Alessandro", personOne.getFirstName());
+        assertEquals("McFaul", personOne.getLastName());
+        assertEquals("5 Lukken Plaza", personOne.getAddress());
+        assertEquals("Male", personOne.getGender());
+
+        assertTrue(personOne.getEnabled());
+
+        PersonDTO personFour = people.get(4);
+
+        assertNotNull(personFour.getId());
+        assertTrue(personFour.getId() > 0);
+
+        assertEquals("Cassandra", personFour.getFirstName());
+        assertEquals("O'Keefe", personFour.getLastName());
+        assertEquals("20163 Summer Ridge Avenue", personFour.getAddress());
+        assertEquals("Female", personFour.getGender());
         assertFalse(personFour.getEnabled());
     }
 

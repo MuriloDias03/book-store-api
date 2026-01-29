@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.murilodias03.bookstore.config.TestConfigs;
 import com.murilodias03.bookstore.integrationtests.dto.PersonDTO;
+import com.murilodias03.bookstore.integrationtests.dto.wrappers.json.WrapperPersonDTO;
+import com.murilodias03.bookstore.integrationtests.dto.wrappers.xml.PagedModelPerson;
 import com.murilodias03.bookstore.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -22,7 +24,6 @@ import static io.restassured.RestAssured.given;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled("Desabilitado temporariamente")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PersonControllerXmlTest extends AbstractIntegrationTest {
@@ -200,7 +201,8 @@ class PersonControllerXmlTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        List<PersonDTO> people = objectMapper.readValue(content, new TypeReference<List<PersonDTO>>() {});
+        PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+        List<PersonDTO> people = wrapper.getContent();
 
         PersonDTO personOne = people.getFirst();
 
@@ -227,6 +229,53 @@ class PersonControllerXmlTest extends AbstractIntegrationTest {
         assertEquals("Male", personFour.getGender());
         assertFalse(personFour.getEnabled());
     }
+
+
+    @Test
+    @Order(7)
+    void findByNameTest() throws JsonProcessingException {
+
+        // {{baseUrl}}/person/findPeopleByName/and?page=0&size=12&direction=asc
+        var content = given(specification)
+                .accept(MediaType.APPLICATION_XML_VALUE)
+                .pathParam("firstName", "and")
+                .queryParams("page", 0, "size", 12, "direction", "asc")
+                .when()
+                .get("findPeopleByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .extract()
+                .body()
+                .asString();
+
+        PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+        List<PersonDTO> people = wrapper.getContent();
+
+        PersonDTO personOne = people.get(0);
+
+        assertNotNull(personOne.getId());
+        Assertions.assertTrue(personOne.getId() > 0);
+
+        assertEquals("Alessandro", personOne.getFirstName());
+        assertEquals("McFaul", personOne.getLastName());
+        assertEquals("5 Lukken Plaza", personOne.getAddress());
+        assertEquals("Male", personOne.getGender());
+
+        Assertions.assertTrue(personOne.getEnabled());
+
+        PersonDTO personFour = people.get(4);
+
+        assertNotNull(personFour.getId());
+        Assertions.assertTrue(personFour.getId() > 0);
+
+        assertEquals("Cassandra", personFour.getFirstName());
+        assertEquals("O'Keefe", personFour.getLastName());
+        assertEquals("20163 Summer Ridge Avenue", personFour.getAddress());
+        assertEquals("Female", personFour.getGender());
+        assertFalse(personFour.getEnabled());
+    }
+
 
     private void mockPerson() {
         person.setFirstName("Linus");

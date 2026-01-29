@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.murilodias03.bookstore.config.TestConfigs;
 import com.murilodias03.bookstore.integrationtests.controllers.withyaml.mapper.YAMLMapper;
 import com.murilodias03.bookstore.integrationtests.dto.PersonDTO;
+import com.murilodias03.bookstore.integrationtests.dto.wrappers.json.WrapperPersonDTO;
+import com.murilodias03.bookstore.integrationtests.dto.wrappers.xml.PagedModelPerson;
 import com.murilodias03.bookstore.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
@@ -24,7 +26,6 @@ import static io.restassured.RestAssured.given;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled("Desabilitado temporariamente")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PersonControllerYamlTest extends AbstractIntegrationTest {
@@ -214,9 +215,9 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
                 .contentType(MediaType.APPLICATION_YAML_VALUE)
                 .extract()
                 .body()
-                .as(PersonDTO[].class, objectMapper);
+                .as(PagedModelPerson.class, objectMapper);
 
-        List<PersonDTO> people = Arrays.asList(response);
+        List<PersonDTO> people = response.getContent();
 
         PersonDTO personOne = people.getFirst();
 
@@ -243,6 +244,52 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
         assertEquals("Male", personFour.getGender());
         assertFalse(personFour.getEnabled());
     }
+
+
+    @Test
+    @Order(7)
+    void findByNameTest() throws JsonProcessingException {
+
+        // {{baseUrl}}/person/findPeopleByName/and?page=0&size=12&direction=asc
+        var content = given(specification)
+                .accept(MediaType.APPLICATION_YAML_VALUE)
+                .pathParam("firstName", "and")
+                .queryParams("page", 0, "size", 12, "direction", "asc")
+                .when()
+                .get("findPeopleByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .contentType(MediaType.APPLICATION_YAML_VALUE)
+                .extract()
+                .body()
+                .as(PagedModelPerson.class, objectMapper);
+
+        List<PersonDTO> people = content.getContent();
+
+        PersonDTO personOne = people.get(0);
+
+        assertNotNull(personOne.getId());
+        Assertions.assertTrue(personOne.getId() > 0);
+
+        assertEquals("Alessandro", personOne.getFirstName());
+        assertEquals("McFaul", personOne.getLastName());
+        assertEquals("5 Lukken Plaza", personOne.getAddress());
+        assertEquals("Male", personOne.getGender());
+
+        Assertions.assertTrue(personOne.getEnabled());
+
+        PersonDTO personFour = people.get(4);
+
+        assertNotNull(personFour.getId());
+        Assertions.assertTrue(personFour.getId() > 0);
+
+        assertEquals("Cassandra", personFour.getFirstName());
+        assertEquals("O'Keefe", personFour.getLastName());
+        assertEquals("20163 Summer Ridge Avenue", personFour.getAddress());
+        assertEquals("Female", personFour.getGender());
+        assertFalse(personFour.getEnabled());
+    }
+
 
     private void mockPerson() {
         person.setFirstName("Linus");

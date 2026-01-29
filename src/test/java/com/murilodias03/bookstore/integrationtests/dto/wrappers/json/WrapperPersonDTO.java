@@ -1,4 +1,4 @@
-package com.murilodias03.bookstore.integrationtests.dto.wrappers;
+package com.murilodias03.bookstore.integrationtests.dto.wrappers.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
