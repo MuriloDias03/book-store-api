@@ -206,6 +206,7 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
 
         var response = given(specification)
                 .accept(MediaType.APPLICATION_YAML_VALUE)
+                .queryParams("page", 3, "size", 12, "direction", "asc")
                 .when()
                 .get()
                 .then()
@@ -217,27 +218,30 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
 
         List<PersonDTO> people = Arrays.asList(response);
 
-        PersonDTO personOne = people.get(0);
+        PersonDTO personOne = people.getFirst();
 
         assertNotNull(personOne.getId());
         assertTrue(personOne.getId() > 0);
 
-        assertEquals("Ayrton", personOne.getFirstName());
-        assertEquals("Senna", personOne.getLastName());
-        assertEquals("São Paulo - Brasil", personOne.getAddress());
+        assertEquals("Allin", personOne.getFirstName());
+        assertEquals("Otridge", personOne.getLastName());
+        assertEquals("09846 Independence Center", personOne.getAddress());
         assertEquals("Male", personOne.getGender());
-        assertTrue(personOne.getEnabled());
+        assertFalse(personOne.getEnabled());
+
 
         PersonDTO personFour = people.get(4);
+        person = personFour;
 
         assertNotNull(personFour.getId());
+
         assertTrue(personFour.getId() > 0);
 
-        assertEquals("Muhamamd", personFour.getFirstName());
-        assertEquals("Ali", personFour.getLastName());
-        assertEquals("Kentucky - US", personFour.getAddress());
+        assertEquals("Alonso", personFour.getFirstName());
+        assertEquals("Luchelli", personFour.getLastName());
+        assertEquals("9 Doe Crossing Avenue", personFour.getAddress());
         assertEquals("Male", personFour.getGender());
-        assertTrue(personFour.getEnabled());
+        assertFalse(personFour.getEnabled());
     }
 
     private void mockPerson() {

@@ -1,5 +1,7 @@
 package com.murilodias03.bookstore.integrationtests.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -8,7 +10,11 @@ public class PersonDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+
+    @JsonProperty("first_name")
     private String firstName;
+
+    @JsonProperty("last_name")
     private String lastName;
     private String address;
     private String gender;

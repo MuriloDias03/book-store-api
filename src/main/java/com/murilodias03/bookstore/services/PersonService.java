@@ -9,7 +9,6 @@ import static com.murilodias03.bookstore.mapper.ObjectMapper.parseObject;
 import com.murilodias03.bookstore.model.Person;
 import com.murilodias03.bookstore.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
@@ -40,6 +39,28 @@ public class PersonService {
         logger.info("Finding all people!");
 
         var people = personRepository.findAll(pageable);
+
+        var peopleWithLinks = people.map(person -> {
+            var dto = parseObject(person, PersonDTO.class);
+            addHateoasLinks(dto);
+            return dto;
+        });
+
+        Link findAllLink = WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(PersonController.class)
+                        .findAll(
+                                pageable.getPageNumber(),
+                                pageable.getPageSize(),
+                                String.valueOf(pageable.getSort())))
+                        .withSelfRel();
+
+        return assembler.toModel(peopleWithLinks, findAllLink);
+    }
+
+    public PagedModel<EntityModel<PersonDTO>> findByName(String firstName, Pageable pageable) {
+        logger.info("Finding people by name!");
+
+        var people = personRepository.findPeopleByName(firstName, pageable);
 
         var peopleWithLinks = people.map(person -> {
             var dto = parseObject(person, PersonDTO.class);
