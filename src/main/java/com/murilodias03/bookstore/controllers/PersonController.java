@@ -13,6 +13,9 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/person")
@@ -82,6 +85,16 @@ public class PersonController implements PersonControllerDocs {
         return personService.create(person);
     }
 
+    @PostMapping(value = "/createWithFile",
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_YAML_VALUE}
+    )
+    @Override
+    public List<PersonDTO> createWithFile(@RequestParam MultipartFile file) {
+        return personService.createWithFile(file);
+    }
 
     @PutMapping(
             consumes = {
@@ -107,7 +120,6 @@ public class PersonController implements PersonControllerDocs {
     public PersonDTO disablePerson(@PathVariable Long id){
         return personService.disablePerson(id);
     }
-
 
     @DeleteMapping(value = "/{id}")
     @Override
