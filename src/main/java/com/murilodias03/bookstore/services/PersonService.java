@@ -7,14 +7,16 @@ import com.murilodias03.bookstore.exceptions.FileStorageException;
 import com.murilodias03.bookstore.exceptions.RequeriedObjectsIsNullException;
 import com.murilodias03.bookstore.exceptions.ResourceNotFoundException;
 
-import static com.murilodias03.bookstore.mapper.ObjectMapper.parseListObjects;
 import static com.murilodias03.bookstore.mapper.ObjectMapper.parseObject;
 
+import com.murilodias03.bookstore.file.exporter.contract.FileExporter;
+import com.murilodias03.bookstore.file.exporter.factory.FileExporterFactory;
 import com.murilodias03.bookstore.file.importer.contract.FileImporter;
 import com.murilodias03.bookstore.file.importer.factory.FileImporterFactory;
 import com.murilodias03.bookstore.model.Person;
 import com.murilodias03.bookstore.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -28,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
@@ -40,14 +41,17 @@ public class PersonService {
     private final Logger logger = Logger.getLogger(PersonService.class.getName());
     private final PersonRepository personRepository;
     private final FileImporterFactory fileImporter;
+    private final FileExporterFactory fileExporter;
 
     private final PagedResourcesAssembler<PersonDTO> assembler;
 
     public PersonService(PersonRepository personRepository,
                          FileImporterFactory fileImporter,
+                         FileExporterFactory fileExporter,
                          PagedResourcesAssembler<PersonDTO> assembler) {
         this.personRepository = personRepository;
         this.fileImporter = fileImporter;
+        this.fileExporter = fileExporter;
         this.assembler = assembler;
     }
 
@@ -74,6 +78,21 @@ public class PersonService {
         addHateoasLinks(dto);
 
         return dto;
+    }
+
+    public Resource exportPage(Pageable pageable, String acceptHeader) {
+        logger.info("Exporting a people page!");
+
+        var people = personRepository.findAll(pageable)
+                .map(person -> parseObject(person, PersonDTO.class))
+                .getContent();
+
+        try {
+            FileExporter exporter = fileExporter.getExporter(acceptHeader);
+            return exporter.eExporterFile(people);
+        } catch (Exception e) {
+            throw new RuntimeException("Error during file export!", e);
+        }
     }
 
     public PersonDTO create(PersonDTO person) {
@@ -180,6 +199,7 @@ public class PersonService {
     private void addHateoasLinks(PersonDTO dto) {
         dto.add(linkTo(methodOn(PersonController.class).findAll(1, 12, "asc")).withRel("findAll").withType("GET"));
         dto.add(linkTo(methodOn(PersonController.class).findById(dto.getId())).withSelfRel().withType("GET"));
+        dto.add(linkTo(methodOn(PersonController.class).exportPage(1, 12, "asc", null)).withRel("exportPage").withType("GET").withTitle("Export people"));
         dto.add(linkTo(methodOn(PersonController.class).findByName("", 1, 12, "asc")).withRel("findByName").withType("GET"));
         dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
         dto.add(linkTo(methodOn(PersonController.class)).slash("createWithFile").withRel("createWithFile").withType("POST"));
