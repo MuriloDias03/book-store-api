@@ -20,8 +20,9 @@
         <testcontainers.version>1.20.6</testcontainers.version>
         <commons.csv.version>1.12.0</commons.csv.version>
         <apache.poi.version>5.3.0</apache.poi.version>
-        <commons-io-version>2.18.0</commons-io-version>
-        <jasperreportsversion>7.0.3</jasperreportsversion>
+        <commons-io.version>2.18.0</commons-io.version>
+        <jasperreports.version>7.0.3</jasperreports.version>
+        <zxing.version>3.5.3</zxing.version>
     </properties>
     <dependencies>
         <dependency>
@@ -89,26 +90,25 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>${jasperreportsversion}</version>
+            <version>${jasperreports.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-fonts</artifactId>
-            <version>${jasperreportsversion}</version>
+            <version>${jasperreports.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-pdf</artifactId>
-            <version>${jasperreportsversion}</version>
+            <version>${jasperreports.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${commons-io-version}</version>
+            <version>${commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -126,6 +126,18 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>${zxing.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${zxing.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
