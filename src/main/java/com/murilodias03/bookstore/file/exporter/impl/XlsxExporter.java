@@ -15,7 +15,7 @@ import java.util.List;
 public class XlsxExporter  implements FileExporter {
 
     @Override
-    public Resource eExporterFile(List<PersonDTO> people) throws Exception {
+    public Resource exportFile(List<PersonDTO> people) throws Exception {
 
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("People");
@@ -52,6 +52,11 @@ public class XlsxExporter  implements FileExporter {
         }
     }
 
+    @Override
+    public Resource exportPerson(PersonDTO person) throws Exception {
+        return null;
+    }
+
     private CellStyle createHeaderCellStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
@@ -60,5 +65,4 @@ public class XlsxExporter  implements FileExporter {
         style.setAlignment(HorizontalAlignment.CENTER);
         return style;
     }
-
 }

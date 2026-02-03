@@ -82,6 +82,10 @@ public class PersonController implements PersonControllerDocs {
                 .body(file);
     }
 
+    @Override
+    public ResponseEntity<Resource> exportPerson(Long id, HttpServletRequest request) {
+        return null;
+    }
 
     @GetMapping(value = "/findPeopleByName/{firstName}",
             produces = {

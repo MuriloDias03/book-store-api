@@ -89,7 +89,22 @@ public class PersonService {
 
         try {
             FileExporter exporter = fileExporter.getExporter(acceptHeader);
-            return exporter.eExporterFile(people);
+            return exporter.exportFile(people);
+        } catch (Exception e) {
+            throw new RuntimeException("Error during file export!", e);
+        }
+    }
+
+    public Resource exportPerson(Long id, String acceptHeader) {
+        logger.info("Exporting data of one person!");
+
+        var person = personRepository.findById(id)
+                .map(entity -> parseObject(entity, PersonDTO.class))
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+
+        try {
+            FileExporter exporter = fileExporter.getExporter(acceptHeader);
+            return exporter.exportPerson(person);
         } catch (Exception e) {
             throw new RuntimeException("Error during file export!", e);
         }

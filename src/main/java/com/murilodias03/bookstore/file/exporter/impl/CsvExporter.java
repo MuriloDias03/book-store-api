@@ -17,7 +17,7 @@ import java.util.List;
 public class CsvExporter implements FileExporter {
 
     @Override
-    public Resource eExporterFile(List<PersonDTO> people) throws Exception {
+    public Resource exportFile(List<PersonDTO> people) throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
 
@@ -41,5 +41,10 @@ public class CsvExporter implements FileExporter {
 
         }
         return new ByteArrayResource(outputStream.toByteArray());
+    }
+
+    @Override
+    public Resource exportPerson(PersonDTO person) throws Exception {
+        return null;
     }
 }
