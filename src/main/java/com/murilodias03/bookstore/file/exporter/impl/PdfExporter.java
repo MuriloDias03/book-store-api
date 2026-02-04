@@ -1,7 +1,7 @@
 package com.murilodias03.bookstore.file.exporter.impl;
 
 import com.murilodias03.bookstore.data.dto.PersonDTO;
-import com.murilodias03.bookstore.file.exporter.contract.FileExporter;
+import com.murilodias03.bookstore.file.exporter.contract.PersonExporter;
 import com.murilodias03.bookstore.services.QRCodeService;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class PdfExporter implements FileExporter {
+public class PdfExporter implements PersonExporter {
 
     private final QRCodeService qrCodeService;
 
@@ -26,7 +26,7 @@ public class PdfExporter implements FileExporter {
     }
 
     @Override
-    public Resource exportFile(List<PersonDTO> people) throws Exception {
+    public Resource exportPeople(List<PersonDTO> people) throws Exception {
         InputStream inputStream = getClass().getResourceAsStream("/templates/people.jrxml");
 
         if (inputStream == null) throw new RuntimeException("Template file not found: /templates/people.jrxml");
@@ -54,17 +54,21 @@ public class PdfExporter implements FileExporter {
         if (subReportStream == null) throw new RuntimeException("Template file not found: /templates/books.jrxml");
 
         JasperReport mainReport = JasperCompileManager.compileReport(mainTemplateStream);
-        JasperReport subReport = JasperCompileManager.compileReport(mainTemplateStream);
+        JasperReport subReport = JasperCompileManager.compileReport(subReportStream);
 
         InputStream qrCodeStream = qrCodeService.generateQRCode(person.getProfileUrl(), 200, 200);
 
         JRBeanCollectionDataSource mainDataSource = new JRBeanCollectionDataSource(Collections.singletonList(person));
 
-        JRBeanCollectionDataSource subDataSource = new JRBeanCollectionDataSource(person.getBooks());
+        JRBeanCollectionDataSource subDataResourceSource = new JRBeanCollectionDataSource(person.getBooks());
+
+        String path =  getClass().getResource("/templates/books.jasper").getPath();
+
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("SUB_REPORT_DATA_SOURCE", subDataSource);
+        parameters.put("SUB_REPORT_DATA_SOURCE", subDataResourceSource);
         parameters.put("BOOK_SUB_REPORT", subReport);
-        parameters.put("QA_CODE_IMAGE", qrCodeStream);
+        parameters.put("SUB_REPORT_DIR", path);
+        parameters.put("QR_CODE_IMAGE", qrCodeStream);
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(mainReport, parameters, mainDataSource);
 

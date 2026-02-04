@@ -92,7 +92,7 @@ public interface PersonControllerDocs {
     );
 
     @Operation(summary = "Export Person data as PDF",
-            description = "export a specific person data as PDF by your ID",
+            description = "Export a specific person data as PDF by your ID",
             tags = {"People"},
             responses = {
                     @ApiResponse(

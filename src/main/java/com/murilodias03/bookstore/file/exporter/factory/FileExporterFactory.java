@@ -2,7 +2,7 @@ package com.murilodias03.bookstore.file.exporter.factory;
 
 import com.murilodias03.bookstore.exceptions.BadRequestException;
 import com.murilodias03.bookstore.file.exporter.MediaTypes;
-import com.murilodias03.bookstore.file.exporter.contract.FileExporter;
+import com.murilodias03.bookstore.file.exporter.contract.PersonExporter;
 import com.murilodias03.bookstore.file.exporter.impl.CsvExporter;
 import com.murilodias03.bookstore.file.exporter.impl.PdfExporter;
 import com.murilodias03.bookstore.file.exporter.impl.XlsxExporter;
@@ -22,7 +22,7 @@ public class FileExporterFactory {
         this.context = context;
     }
 
-    public FileExporter getExporter(String acceptHeader) throws Exception {
+    public PersonExporter getExporter(String acceptHeader) throws Exception {
         if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_XLSX_VALUE)) {
             return context.getBean(XlsxExporter.class);
         } else if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_CSV_VALUE)) {

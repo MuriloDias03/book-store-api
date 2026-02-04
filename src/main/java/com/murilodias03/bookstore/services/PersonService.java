@@ -9,7 +9,7 @@ import com.murilodias03.bookstore.exceptions.ResourceNotFoundException;
 
 import static com.murilodias03.bookstore.mapper.ObjectMapper.parseObject;
 
-import com.murilodias03.bookstore.file.exporter.contract.FileExporter;
+import com.murilodias03.bookstore.file.exporter.contract.PersonExporter;
 import com.murilodias03.bookstore.file.exporter.factory.FileExporterFactory;
 import com.murilodias03.bookstore.file.importer.contract.FileImporter;
 import com.murilodias03.bookstore.file.importer.factory.FileImporterFactory;
@@ -88,8 +88,8 @@ public class PersonService {
                 .getContent();
 
         try {
-            FileExporter exporter = fileExporter.getExporter(acceptHeader);
-            return exporter.exportFile(people);
+            PersonExporter exporter = fileExporter.getExporter(acceptHeader);
+            return exporter.exportPeople(people);
         } catch (Exception e) {
             throw new RuntimeException("Error during file export!", e);
         }
@@ -103,7 +103,7 @@ public class PersonService {
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
         try {
-            FileExporter exporter = fileExporter.getExporter(acceptHeader);
+            PersonExporter exporter = fileExporter.getExporter(acceptHeader);
             return exporter.exportPerson(person);
         } catch (Exception e) {
             throw new RuntimeException("Error during file export!", e);
