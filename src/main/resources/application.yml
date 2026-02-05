@@ -4,6 +4,10 @@ cors:
 file:
   upload-dir: /home/murilo/projetos/estudo/Erudio-SpringBoot/rest-with-spring-boot-and-java/outros/arquivos
 
+email:
+  subject: "Default Subject"
+  message: "Default Message"
+
 spring:
   application:
     name: BookStore
@@ -11,7 +15,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/book-store-bd?options=-c%20timezone=UTC
     username: postgres
-    password: B2a1r17@
+    password: ${BD_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: none
@@ -21,6 +25,16 @@ spring:
     show-sql: false
 
     open-in-view: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enabled: true
+      mail.smtp.starttls.required: true
 
   servlet:
     multipart:
@@ -39,5 +53,6 @@ spring-doc:
     - /person/**
     - /books/**
     - /files/**
+    - /email/**
   swagger-ui:
     use-root-path: true
