@@ -7,6 +7,12 @@ cors:
 file:
   upload-dir: /home/murilo/projetos/estudo/Erudio-SpringBoot/rest-with-spring-boot-and-java/outros/arquivos
 
+security:
+  jwt:
+    token:
+      secret-key: 53cr37
+      expire-lenght: 3600000
+
 email:
   subject: "Default Subject"
   message: "Default Message"
@@ -54,5 +60,6 @@ spring-doc:
     - /books/**
     - /files/**
     - /email/**
+    - /auth/**
   swagger-ui:
     use-root-path: true
