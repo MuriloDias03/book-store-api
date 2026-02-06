@@ -50,6 +50,20 @@ public class JwtTokenProvider {
         return new TokenDTO(username, true, now, validity, accessToken, refreshToken);
     }
 
+    public TokenDTO refreshToken(String refreshToken) {
+        var token = "";
+        if (refreshTokenContainsBearer(refreshToken)) {
+            token = refreshToken.substring("Bearer ".length());
+        }
+
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+
+        String username = decodedJWT.getSubject();
+        List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+        return createAccessToken(username, roles);
+    }
+
     public Authentication getAuthentication(String token) {
         DecodedJWT decodedJWT = decodedToken(token);
         UserDetails userDetails = this.userDetailsService
@@ -59,10 +73,7 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-
-        if (StringUtils.isNotBlank(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring("Bearer ".length());
-        }
+        if (refreshTokenContainsBearer(bearerToken)) return bearerToken.substring("Bearer ".length());
         return null;
     }
 
@@ -103,5 +114,9 @@ public class JwtTokenProvider {
         JWTVerifier verifier = JWT.require(alg).build();
         DecodedJWT decodedJWT = verifier.verify(token);
         return decodedJWT;
+    }
+
+    private static boolean refreshTokenContainsBearer(String refreshToken) {
+        return StringUtils.isNotBlank(refreshToken) && refreshToken.startsWith("Bearer ");
     }
 }
