@@ -26,7 +26,7 @@ public class AuthController implements AuthControllerDocs {
         var token = authService.singIn(credentials);
 
         if (token == null) ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid token request!");
-        return ResponseEntity.ok().body(token);
+        return token;
     }
 
     @PutMapping(value = "/refresh/{username}")
@@ -36,7 +36,7 @@ public class AuthController implements AuthControllerDocs {
         var token = authService.refreshToken(username, refreshToken);
 
         if (token == null) ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid token request!");
-        return ResponseEntity.ok().body(token);
+        return token;
     }
 
     private static boolean credentialsIsInvalid(AccountCredentialsDTO credentials) {

@@ -3,7 +3,9 @@ package com.murilodias03.bookstore.integrationtests.controllers.withyaml;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.murilodias03.bookstore.config.TestConfigs;
 import com.murilodias03.bookstore.integrationtests.controllers.withyaml.mapper.YAMLMapper;
+import com.murilodias03.bookstore.integrationtests.dto.AccountCredentialsDTO;
 import com.murilodias03.bookstore.integrationtests.dto.PersonDTO;
+import com.murilodias03.bookstore.integrationtests.dto.TokenDTO;
 import com.murilodias03.bookstore.integrationtests.dto.wrappers.json.WrapperPersonDTO;
 import com.murilodias03.bookstore.integrationtests.dto.wrappers.xml.PagedModelPerson;
 import com.murilodias03.bookstore.integrationtests.testcontainers.AbstractIntegrationTest;
@@ -24,6 +26,7 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -34,25 +37,52 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
     private static YAMLMapper objectMapper;
 
     private static PersonDTO person;
+    private static TokenDTO tokenDTO;
 
     @BeforeAll
     static void setUp() {
         objectMapper = new YAMLMapper();
         person = new PersonDTO();
+        tokenDTO = new TokenDTO();
     }
+
+
+    @Test
+    @Order(0)
+    void signIn() {
+        AccountCredentialsDTO credentials = new AccountCredentialsDTO("leandro", "admin123");
+
+        tokenDTO = given()
+                .basePath("/auth/signin")
+                .port(TestConfigs.SERVER_PORT)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(credentials)
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(TokenDTO.class);
+
+        specification = new RequestSpecBuilder()
+                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_FRONTEND)
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDTO.getAccessToken())
+                .setBasePath("/person")
+                .setPort(TestConfigs.SERVER_PORT)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+                .build();
+
+        assertNotNull(tokenDTO.getAccessToken());
+        assertNotNull(tokenDTO.getRefreshToken());
+    }
+
 
     @Test
     @Order(1)
     void createTest() throws JsonProcessingException {
         mockPerson();
-
-        specification = new RequestSpecBuilder()
-            .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_FRONTEND)
-            .setBasePath("/person")
-            .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-            .build();
 
         var createdPerson = given().config(
                 RestAssuredConfig.config()
@@ -297,5 +327,7 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
         person.setAddress("Helsinki - Finland");
         person.setGender("Male");
         person.setEnabled(true);
+        person.setProfileUrl("https://en.wikipedia.org/wiki/Ayrton_Senna");
+        person.setPhotoUrl("https://raw.githubusercontent.com/leandrocgsi/rest-with-spring-boot-and-java-erudio/refs/heads/main/photos/01_senna.jpg");
     }
 }
