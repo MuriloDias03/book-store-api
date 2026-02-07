@@ -1,9 +1,8 @@
 package com.murilodias03.bookstore.controllers;
 
+import com.murilodias03.bookstore.controllers.docs.AuthControllerDocs;
 import com.murilodias03.bookstore.data.dto.security.AccountCredentialsDTO;
-import com.murilodias03.bookstore.data.dto.security.TokenDTO;
 import com.murilodias03.bookstore.services.AuthService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication Endpoint!")
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthController implements AuthControllerDocs {
 
     private final AuthService authService;
 
@@ -21,7 +20,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @Operation(summary = "Authenticates an user and returns a token")
     @PostMapping(value = "/signin")
     public ResponseEntity<?> signIn(@RequestBody AccountCredentialsDTO credentials) {
         if (credentialsIsInvalid(credentials)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
@@ -31,7 +29,6 @@ public class AuthController {
         return ResponseEntity.ok().body(token);
     }
 
-    @Operation(summary = "Refresh token for authenticated user and returns a token")
     @PutMapping(value = "/refresh/{username}")
     public ResponseEntity<?> refreshToken(@PathVariable String username,
                                           @RequestHeader("Authorization") String refreshToken) {

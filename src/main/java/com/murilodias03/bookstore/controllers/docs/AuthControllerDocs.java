@@ -1,0 +1,35 @@
+package com.murilodias03.bookstore.controllers.docs;
+
+import com.murilodias03.bookstore.data.dto.security.AccountCredentialsDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.ResponseEntity;
+
+public interface AuthControllerDocs {
+
+    @Operation(summary = "Authenticates an User and Returns a Token",
+            description = "Validates user credentials and generates an access token for authentication.",
+            tags = {"Authentication"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
+            }
+    )
+    ResponseEntity<?> signIn(AccountCredentialsDTO credentials);
+
+    @Operation(summary = "Refresh token for authenticated user and returns a token",
+            description = "Generates a new access token using the provided refresh token and username.",
+            tags = {"Authentication"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Internal Server Error", responseCode = "500", content = @Content)
+            }
+    )
+    ResponseEntity<?> refreshToken(String username, String refreshToken);
+
+}
