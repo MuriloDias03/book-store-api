@@ -22,9 +22,9 @@ spring:
     name: BookStore
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/book-store-bd?options=-c%20timezone=UTC
+    url: ${JDBC_URL}
     username: postgres
-    password: ${BD_PASSWORD}
+    password: ${DB_PROD_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: none
