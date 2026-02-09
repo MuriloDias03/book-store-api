@@ -48,6 +48,14 @@ jobs:
           docker push ${{ secrets.REGISTRY_INFO}}/${{ secrets.DOCKER_USERNAME }}/book-store:latest
           docker push ${{ secrets.REGISTRY_INFO}}/${{ secrets.DOCKER_USERNAME }}/book-store:${{ github.run_id }}
 
+      - name: Deploy to Google Cloud Run
+        run: |
+          gcloud run deploy book-store \
+            --image ${{ secrets.REGISTRY_INFO}}/${{ secrets.DOCKER_USERNAME }}/book-store:latest
+            --region southamerica-east1 \
+            --platform managed \
+            --allow-unauthenticated
+
       - name: Push to Docker Hub Container Registry
         run: |
           docker tag ${{ secrets.DOCKER_USERNAME }}/book-store:latest ${{ secrets.DOCKER_USERNAME }}/book-store:${{ github.run_id }}
