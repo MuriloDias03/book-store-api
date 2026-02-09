@@ -1,3 +1,1 @@
-# Sessão 15:
-
-- Testes unitários???
+[![Continuous Integration and Delivery with GitHub Actions](https://github.com/MuriloDias03/rest-with-spring-boot-and-java/actions/workflows/continuous-deployment.yml/badge.svg?branch=main)](https://github.com/MuriloDias03/rest-with-spring-boot-and-java/actions/workflows/continuous-deployment.yml)
