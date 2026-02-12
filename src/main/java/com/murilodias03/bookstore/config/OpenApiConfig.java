@@ -22,7 +22,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("Book Store")
                         .version("v1")
-                        .description("REST API's RESTful from 0 with Java, Spring Boot, Kubernetes and Docker V2 " + instanceInformationService.retrieveInstanceInfo())
+                        .description("REST API's RESTful from 0 with Java, Spring Boot, Kubernetes and Docker V3 " + instanceInformationService.retrieveInstanceInfo())
                         .termsOfService("https://github.com/MuriloDias03")
                         .license(new License()
                                 .name("MIT License")
