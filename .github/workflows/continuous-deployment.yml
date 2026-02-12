@@ -23,19 +23,10 @@ jobs:
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
 
-      - name: Configure Google Cloud SDK Repository
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y apt-transport-https ca-certificates gnupg curl
-          curl -fsSL https://packages.cloud.google.com/apt/apt-key.gpg | gpg --dearmor > /usr/share/keyrings/cloud.google.gpg
-          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk-.list > /dev/null
-          sudo apt-get update
-
-      - name: Install GKE Cloud Auth Plugin
-        run: sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
-
-      - name: Configure GKE Cloud Auth Plugin
-        run: echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          install_components: 'gke-gcloud-auth-plugin'
 
       - name: Configure GKE Cluster Access
         run: gcloud container clusters get-credentials book-store-cluster --region northamerica-northeast1 --project ${{ secrets.PROJECT_ID }}
