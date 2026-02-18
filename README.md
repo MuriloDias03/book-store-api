@@ -83,6 +83,12 @@ A cada *push* na branch `main`, o GitHub Actions executa automaticamente os segu
 - **ModelMapper / Dozer**
 - **Swagger / OpenAPI 3**
 
+> # 💻 Aplicação Front-end (Web Client)
+
+Para demonstrar a API em funcionamento, foi desenvolvida uma aplicação front-end básica utilizando **React** e **Vite**. Este projeto atua como o client da aplicação, consumindo os endpoints da BookStore API e ilustrando na prática a comunicação segura via JWT, controle de rotas e operações CRUD.
+
+🔗 **[Clique aqui para acessar o repositório do Front-end](https://github.com/MuriloDias03/book-store-frontend)**
+
 > # 👨🏻‍💻 Como executar o projeto
 
 ### Pré-requisitos
