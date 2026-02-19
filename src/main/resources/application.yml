@@ -2,7 +2,7 @@ server:
   port: 8080
 
 cors:
-  originPatterns: http://localhost:8080,http://localhost:3000
+  originPatterns: http://localhost:8080,http://localhost:3000,http://localhost:5173
 
 file:
   upload-dir: /home/murilo/projetos/estudo/Erudio-SpringBoot/rest-with-spring-boot-and-java/outros/arquivos
